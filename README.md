@@ -2,7 +2,8 @@
 
 ## Objetivo
 
-Construir uma ferramenta para mestres de RPG para que eles consigam criar seus próprios mapas-mundis, especificando localizações e descrições.
+Construir uma ferramenta para mestres de RPG para que eles consigam criar seus
+próprios mapas-mundis, especificando localizações e descrições.
 
 ## Stack
 
@@ -28,6 +29,18 @@ Este projeto provavelmente usará:
   - Define um nome para o ponto de interesse
   - Define uma descrição para o ponto de interesse
 
-## Setup
+## Setup local
 
-TODO
+```sh
+docker compose up
+```
+
+## Comandos úteis de desenvolvimento
+
+Dentro da pasta `src/`
+
+### Formatar código automaticamente
+
+```sh
+make format
+```
