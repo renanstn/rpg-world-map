@@ -40,6 +40,8 @@ services:
       MINIO_SECRET_KEY: minioadmin
     ports:
       - "5000:5000"
+    volumes:
+      - ./src:/app
     depends_on:
       - postgres
       - minio
