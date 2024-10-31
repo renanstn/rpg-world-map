@@ -5,6 +5,8 @@
 Construir uma ferramenta para mestres de RPG para que eles consigam criar seus
 próprios mapas-mundis, especificando localizações e descrições.
 
+Similar a isso: http://map.leagueoflegends.com/pt_BR
+
 ## Stack
 
 Este projeto provavelmente usará:
@@ -43,4 +45,10 @@ Dentro da pasta `src/`
 
 ```sh
 make format
+```
+
+### Rodar testes
+
+```sh
+docker compose run --rm flask-app pytest
 ```
