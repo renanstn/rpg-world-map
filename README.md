@@ -1,5 +1,7 @@
 # rpg-world-map
 
+[![Run Unit Tests](https://github.com/renanstn/rpg-world-map/actions/workflows/test.yml/badge.svg)](https://github.com/renanstn/rpg-world-map/actions/workflows/test.yml)
+
 ## Objetivo
 
 Construir uma ferramenta para mestres de RPG para que eles consigam criar seus
