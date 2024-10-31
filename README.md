@@ -18,6 +18,7 @@ Este projeto provavelmente usará:
 - Postgres (banco de dados)
 - Minio / S3 (bucket de arquivos)
 - Railway (hospedagem)
+- Github actions para pipelines de CI
 
 ## Fluxos
 
