@@ -41,10 +41,11 @@ def rpg_map():
             if not found:
                 minio_client.make_bucket(minio_bucket_name)
             # Upload file
-            minio_client.fput_object(
+            minio_client.put_object(
                 minio_bucket_name,
                 map_file.filename,
                 map_file,
+                -1,
             )
         except Exception as error:
             return str(error)
