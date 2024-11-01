@@ -41,17 +41,19 @@ def rpg_map():
             if not found:
                 minio_client.make_bucket(minio_bucket_name)
             # Upload file
+            object_size = os.fstat(map_file.fileno()).st_size
             minio_client.put_object(
                 minio_bucket_name,
                 map_file.filename,
                 map_file,
-                -1,
+                object_size,
             )
         except Exception as error:
             return str(error)
         return "Map uploaded!"
     else:
-        pass
+        maps = minio_client.list_objects(minio_bucket_name)
+        return render_template("list_maps.html", maps=maps)
 
 
 @app.route("/create-map")
