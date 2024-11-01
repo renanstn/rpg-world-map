@@ -42,6 +42,9 @@ jobs:
       - name: Run tests
         env:
           DATABASE_URL: postgresql://user:password@localhost:5432/rpg
+          MINIO_ENDPOINT: test
+          MINIO_ACCESS_KEY: test
+          MINIO_SECRET_KEY: test
         run: |
           cd src
           pytest
