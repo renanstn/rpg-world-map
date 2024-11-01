@@ -42,7 +42,7 @@ docker compose up
 
 ## Comandos úteis de desenvolvimento
 
-Dentro da pasta `src/`
+Rode eles dentro da pasta `src/`
 
 ### Formatar código automaticamente
 
@@ -54,4 +54,14 @@ make format
 
 ```sh
 docker compose run --rm flask-app pytest
+```
+
+## Comandos CURL para testar a API
+
+Preguiça de instalar o Postman, vai via CURL mesmo...
+
+Ping
+
+```sh
+curl http://localhost:5000/
 ```
