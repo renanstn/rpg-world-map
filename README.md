@@ -16,7 +16,7 @@ Este projeto provavelmente usará:
 - JavaScript (frontend)
 - Python (backend)
 - Postgres (banco de dados)
-- Minio / S3 (bucket de arquivos)
+- Minio (bucket de arquivos)
 - Railway (hospedagem)
 - Github actions para pipelines de CI
 
@@ -35,6 +35,22 @@ Este projeto provavelmente usará:
   - Define uma descrição para o ponto de interesse
 
 ## Setup local
+
+### Minio
+
+Create access
+
+```sh
+docker compose run --rm minio-mc alias set local http://minio:9000 minioadmin minioadmin
+```
+
+Set download permission
+
+```sh
+docker compose run --rm minio-mc anonymous set download local/rpg
+```
+
+### Project
 
 ```sh
 docker compose up
