@@ -20,6 +20,11 @@ services:
     volumes:
       - minio_data:/data
 
+  minio-mc:
+    image: minio/mc
+    volumes:
+      - mc_storage:/root/.mc
+
   adminer:
     image: adminer
     ports:
@@ -48,3 +53,4 @@ services:
 
 volumes:
   minio_data:
+  mc_storage:
