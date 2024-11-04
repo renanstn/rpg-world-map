@@ -1,8 +1,10 @@
+import io
 from unittest.mock import patch, MagicMock
 
 import pytest
 
-from app import app
+from app import app, db
+import models
 
 
 @pytest.fixture
@@ -31,3 +33,22 @@ def test_get_maps(client):
         assert response.status_code == 200
         assert b"map1.png" in response.data
         assert b"map2.png" in response.data
+
+
+def test_create_map(client):
+    data = {"mapName": "test map"}
+    fake_file = io.BytesIO(b"dummy data")
+    fake_file.name = "fake_file.png"
+    data["mapFile"] = (fake_file, "fake_file.png")
+
+    with patch("app.create_bucket_if_not_exist") as mock_create_bucket, patch(
+        "app.upload_file"
+    ) as mock_upload_file:
+        response = client.post(
+            "/map",
+            data=data,
+            content_type="multipart/form-data",
+        )
+        assert response.status_code == 200
+        mock_create_bucket.assert_called_once()
+        mock_upload_file.assert_called_once()
