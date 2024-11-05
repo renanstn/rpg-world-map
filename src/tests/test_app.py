@@ -68,15 +68,15 @@ def test_add_point_to_map(client):
     """
     Should be possible add points to a pre existing map.
     """
-    map_id = "c6d525d480a94e2987e10726713fb3ba"
     with Session(engine) as session:
         map_ = models.Map(
             name="map-test",
-            map_id=map_id,
+            map_id="c6d525d480a94e2987e10726713fb3ba",
             bucket_path="file-test.png",
         )
         session.add(map_)
         session.commit()
+        map_id = map_.id
 
     fake_file = io.BytesIO(b"dummy data")
     point_data = {
