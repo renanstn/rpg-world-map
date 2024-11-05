@@ -21,5 +21,7 @@ class Point(db.Model):
     name: Mapped[str] = mapped_column(nullable=False)
     description: Mapped[str] = mapped_column(nullable=True)
     icon_path: Mapped[str] = mapped_column(nullable=True)
+    position_x: Mapped[int] = mapped_column(nullable=False)
+    position_y: Mapped[int] = mapped_column(nullable=False)
 
     map_: Mapped["Map"] = relationship(back_populates="points")
