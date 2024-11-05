@@ -1,15 +1,16 @@
 <!DOCTYPE html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>List maps</title>
-</head>
-<body>
+  </head>
+  <body>
     <h2>Uploaded maps</h2>
     <ul>
-        {% for map in maps %}
-        <li>{{ map.object_name }}</li>
-        {% endfor %}
+      {% for map in maps %}
+      <li>{{ map.object_name }}</li>
+      {% endfor %}
     </ul>
-</body>
+  </body>
 </html>
