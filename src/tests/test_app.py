@@ -75,11 +75,14 @@ def test_add_point_to_map(client):
         "pointPositionY": 10,
         "pointIcon": (fake_file, "fake_file.png"),
     }
-    response = client.post(
-        "/point", data=point_data, content_type="multipart/form-data"
-    )
+
+    with patch("app.upload_file") as mock_upload_file:
+        response = client.post(
+            "/point", data=point_data, content_type="multipart/form-data"
+        )
 
     assert response.status_code == 200
+    mock_upload_file.assert_called_once()
 
     with Session(engine) as session:
         point_stored: models.Point = (
