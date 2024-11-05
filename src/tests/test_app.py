@@ -2,8 +2,9 @@ import io
 from unittest.mock import patch, MagicMock
 
 import pytest
+from sqlalchemy.orm import Session
 
-from app import app, db
+from app import app, engine
 import models
 
 
@@ -52,3 +53,42 @@ def test_create_map(client):
         assert response.status_code == 200
         mock_create_bucket.assert_called_once()
         mock_upload_file.assert_called_once()
+
+
+def test_add_point_to_map(client):
+    map_id = "c6d525d480a94e2987e10726713fb3ba"
+    with Session(engine) as session:
+        map_ = models.Map(
+            name="map-test",
+            map_id=map_id,
+            bucket_path="file-test.png",
+        )
+        session.add(map_)
+        session.commit()
+
+    fake_file = io.BytesIO(b"dummy data")
+    point_data = {
+        "mapId": map_id,
+        "pointName": "point-test",
+        "pointDescription": "description-test",
+        "pointPositionX": 10,
+        "pointPositionY": 10,
+        "pointIcon": (fake_file, "fake_file.png"),
+    }
+    response = client.post(
+        "/point", data=point_data, content_type="multipart/form-data"
+    )
+
+    assert response.status_code == 200
+
+    with Session(engine) as session:
+        point_stored: models.Point = (
+            session.query(models.Point)
+            .filter(models.Point.name == "point-test")
+            .first()
+        )
+
+    assert point_stored is not None
+    assert point_stored.name == "point-test"
+    assert point_stored.description == "description-test"
+    assert point_stored.icon_path == "fake_file.png"
