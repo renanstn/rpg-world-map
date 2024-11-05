@@ -47,7 +47,8 @@ def rpg_map():
                 session.add(map_)
                 session.commit()
         except Exception as error:
-            return str(error)
+            # FIXME: better error handling
+            raise Exception(str(error))
         return f"Map uploaded! ID: {map_id}"
     else:
         maps = minio_client.list_objects(MINIO_BUCKET_NAME)
@@ -121,6 +122,7 @@ def point():
                     session.query(Map).filter(Map.id == map_id).first()
                 )
                 if not map_object:
+                    # FIXME: better error handling
                     raise Exception(f"Map ID: '{map_id}' not found.")
                 upload_file(icon_file)
                 point = Point(
@@ -134,7 +136,8 @@ def point():
                 session.add(point)
                 session.commit()
         except Exception as error:
-            return str(error)
+            # FIXME: better error handling
+            raise Exception(str(error))
         return "Point created!"
 
     else:
