@@ -15,12 +15,18 @@ def client():
 
 
 def test_hello_world(client):
+    """
+    Root path must return a hello world message.
+    """
     response = client.get("/")
     assert response.status_code == 200
     assert response.data == b"<p>Hello, World!</p>"
 
 
 def test_get_maps(client):
+    """
+    Should be possible to get a list of created maps.
+    """
     with patch("app.minio_client.list_objects") as mock_list_objects:
         mock_object1 = MagicMock()
         mock_object1.object_name = "map1.png"
@@ -37,6 +43,9 @@ def test_get_maps(client):
 
 
 def test_create_map(client):
+    """
+    Should be possible to create a new map.
+    """
     data = {"mapName": "test map"}
     fake_file = io.BytesIO(b"dummy data")
     fake_file.name = "fake_file.png"
@@ -56,6 +65,9 @@ def test_create_map(client):
 
 
 def test_add_point_to_map(client):
+    """
+    Should be possible add points to a pre existing map.
+    """
     map_id = "c6d525d480a94e2987e10726713fb3ba"
     with Session(engine) as session:
         map_ = models.Map(
