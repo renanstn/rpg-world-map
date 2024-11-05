@@ -1,7 +1,7 @@
 import os
 import uuid
 
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, jsonify
 from sqlalchemy.orm import Session
 
 from database import db, engine
@@ -65,8 +65,32 @@ def load_map(map_id):
         map_object = session.query(Map).filter(Map.map_id == map_id).first()
     map_url = get_minio_path(map_object.bucket_path)
     return render_template(
-        "map.html", map_name=map_object.name, image_url=map_url
+        "map.html",
+        map_name=map_object.name,
+        map_id=map_object.id,
+        image_url=map_url,
     )
+
+
+@app.route("/map/<map_id>/points")
+def load_points(map_id):
+    with Session(engine) as session:
+        map_obj = session.query(Map).filter(Map.map_id == map_id).first()
+        points_obj = (
+            session.query(Point).filter(Point.map_id == map_obj.id).all()
+        )
+    points = []
+    for point in points_obj:
+        points.append(
+            {
+                "id": point.id,
+                "name": point.name,
+                "description": point.description,
+                "x": point.position_x,
+                "y": point.position_y,
+            }
+        )
+    return jsonify(points)
 
 
 @app.route("/map/<map_id>/edit")
@@ -75,7 +99,10 @@ def update_map(map_id):
         map_object = session.query(Map).filter(Map.map_id == map_id).first()
     map_url = get_minio_path(map_object.bucket_path)
     return render_template(
-        "edit_map.html", map_name=map_object.name, image_url=map_url
+        "edit_map.html",
+        map_name=map_object.name,
+        map_id=map_object.id,
+        image_url=map_url,
     )
 
 
@@ -91,10 +118,10 @@ def point():
         try:
             with Session(engine) as session:
                 map_object = (
-                    session.query(Map).filter(Map.map_id == map_id).first()
+                    session.query(Map).filter(Map.id == map_id).first()
                 )
                 if not map_object:
-                    raise Exception(f"Map ID: '{map_id}' no found.")
+                    raise Exception(f"Map ID: '{map_id}' not found.")
                 upload_file(icon_file)
                 point = Point(
                     name=name,
