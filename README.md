@@ -53,6 +53,10 @@ Dá permissão de download:
 docker compose run --rm minio-mc anonymous set download local/rpg
 ```
 
+UI do Minio acessível em:
+
+http://localhost:9001
+
 ### Projeto
 
 Subir projeto localmente
