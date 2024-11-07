@@ -26,7 +26,13 @@
         ></textarea>
         <br />
         <label for="file">Upload File:</label>
-        <input type="file" id="pointIcon" name="pointIcon" required />
+        <input
+          type="file"
+          id="pointIcon"
+          name="pointIcon"
+          accept=".jpg, .jpeg, .png, .svg"
+          required
+        />
         <br />
         <input type="hidden" name="mapId" value="{{ map_id }}" />
         <input type="hidden" name="pointPositionX" value="10" />

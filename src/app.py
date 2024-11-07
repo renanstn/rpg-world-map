@@ -51,7 +51,9 @@ def rpg_map():
             raise Exception(str(error))
         return f"Map uploaded! ID: {map_id}"
     else:
-        maps = minio_client.list_objects(MINIO_BUCKET_NAME)
+        # maps = minio_client.list_objects(MINIO_BUCKET_NAME)
+        with Session(engine) as session:
+            maps = session.query(Map).all()
         return render_template("list_maps.html", maps=maps)
 
 
@@ -64,12 +66,28 @@ def create_map_form():
 def load_map(map_id):
     with Session(engine) as session:
         map_object = session.query(Map).filter(Map.map_id == map_id).first()
+        points_object = (
+            session.query(Point).filter(Point.map_id == map_object.id).all()
+        )
     map_url = get_minio_path(map_object.bucket_path)
+    points = []
+    for point in points_object:
+        points.append(
+            {
+                "id": point.id,
+                "name": point.name,
+                "description": point.description,
+                "path": point.icon_path,
+                "x": point.position_x,
+                "y": point.position_y,
+            }
+        )
     return render_template(
         "map.html",
         map_name=map_object.name,
         map_id=map_object.id,
         image_url=map_url,
+        points=points,
     )
 
 

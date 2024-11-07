@@ -7,7 +7,13 @@
   </head>
   <body>
     <h2>Welcome to {{ map_name }}</h2>
+    {% for i in points %} {{i.name}} {% endfor %}
     <img src="{{ image_url }}" alt="" />
     <input type="hidden" name="mapId" value="{{ map_id }}" />
+
+    <script>
+      const items = {{ points | tojson }};
+      console.log(items);
+    </script>
   </body>
 </html>

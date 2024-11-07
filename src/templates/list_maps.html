@@ -9,7 +9,10 @@
     <h2>Uploaded maps</h2>
     <ul>
       {% for map in maps %}
-      <li>{{ map.object_name }}</li>
+      <li>
+        {{ map.name }}:
+        <a href="{{ url_for('rpg_map') }}/{{map.map_id}}">Link</a>
+      </li>
       {% endfor %}
     </ul>
   </body>
