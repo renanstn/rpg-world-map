@@ -4,7 +4,8 @@ from unittest.mock import patch, MagicMock
 import pytest
 from sqlalchemy.orm import Session
 
-from app import app, engine
+from app import app
+from database import engine
 import models
 
 
@@ -27,19 +28,23 @@ def test_get_maps(client):
     """
     Should be possible to get a list of created maps.
     """
-    with patch("app.minio_client.list_objects") as mock_list_objects:
+    with patch("app.get_all_maps") as mocked_get_maps:
         mock_object1 = MagicMock()
-        mock_object1.object_name = "map1.png"
-        mock_object2 = MagicMock()
-        mock_object2.object_name = "map2.png"
+        mock_object1.name = "Map 1"
+        mock_object1.map_id = "map1.png"
 
-        mock_list_objects.return_value = [mock_object1, mock_object2]
+        mock_object2 = MagicMock()
+        mock_object2.name = "Map 2"
+        mock_object2.map_id = "map2.png"
+
+        mocked_get_maps.return_value = [mock_object1, mock_object2]
 
         response = client.get("/map")
 
         assert response.status_code == 200
-        assert b"map1.png" in response.data
-        assert b"map2.png" in response.data
+        mocked_get_maps.assert_called_once()
+        assert b"Map 1" in response.data
+        assert b"Map 2" in response.data
 
 
 def test_create_map(client):

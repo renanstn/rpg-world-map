@@ -2,9 +2,8 @@ import os
 import uuid
 
 from flask import Flask, request, render_template, jsonify
-from sqlalchemy.orm import Session
 
-from database import db, engine
+from database import db
 from models import Map, Point
 from bucket import (
     MINIO_BUCKET_NAME,
@@ -12,6 +11,14 @@ from bucket import (
     create_bucket_if_not_exist,
     upload_file,
     get_minio_path,
+)
+from utils import (
+    create_map,
+    get_all_maps,
+    get_map_by_id,
+    get_map_by_link,
+    create_point,
+    get_map_points,
 )
 
 
@@ -38,22 +45,20 @@ def rpg_map():
             create_bucket_if_not_exist()
             upload_file(map_file)
             map_id = str(uuid.uuid4().hex)
-            with Session(engine) as session:
-                map_ = Map(
-                    name=map_name,
-                    map_id=map_id,
-                    bucket_path=map_file.filename,
-                )
-                session.add(map_)
-                session.commit()
+            create_map(
+                {
+                    "name": map_name,
+                    "map_id": map_id,
+                    "bucket_path": map_file.filename,
+                }
+            )
         except Exception as error:
             # FIXME: better error handling
             raise Exception(str(error))
         return f"Map uploaded! ID: {map_id}"
     else:
         # maps = minio_client.list_objects(MINIO_BUCKET_NAME)
-        with Session(engine) as session:
-            maps = session.query(Map).all()
+        maps = get_all_maps()
         return render_template("list_maps.html", maps=maps)
 
 
@@ -64,11 +69,8 @@ def create_map_form():
 
 @app.route("/map/<map_id>")
 def load_map(map_id):
-    with Session(engine) as session:
-        map_object = session.query(Map).filter(Map.map_id == map_id).first()
-        points_object = (
-            session.query(Point).filter(Point.map_id == map_object.id).all()
-        )
+    map_object = get_map_by_link(map_id)
+    points_object = get_map_points(map_id)
     map_url = get_minio_path(map_object.bucket_path)
     points = []
     for point in points_object:
@@ -91,31 +93,9 @@ def load_map(map_id):
     )
 
 
-@app.route("/map/<map_id>/points")
-def load_points(map_id):
-    with Session(engine) as session:
-        map_obj = session.query(Map).filter(Map.map_id == map_id).first()
-        points_obj = (
-            session.query(Point).filter(Point.map_id == map_obj.id).all()
-        )
-    points = []
-    for point in points_obj:
-        points.append(
-            {
-                "id": point.id,
-                "name": point.name,
-                "description": point.description,
-                "x": point.position_x,
-                "y": point.position_y,
-            }
-        )
-    return jsonify(points)
-
-
 @app.route("/map/<map_id>/edit")
 def update_map(map_id):
-    with Session(engine) as session:
-        map_object = session.query(Map).filter(Map.map_id == map_id).first()
+    map_object = get_map_by_id(map_id)
     map_url = get_minio_path(map_object.bucket_path)
     return render_template(
         "edit_map.html",
@@ -135,24 +115,18 @@ def point():
         position_y = request.form["pointPositionY"]
         icon_file = request.files["pointIcon"]
         try:
-            with Session(engine) as session:
-                map_object = (
-                    session.query(Map).filter(Map.id == map_id).first()
-                )
-                if not map_object:
-                    # FIXME: better error handling
-                    raise Exception(f"Map ID: '{map_id}' not found.")
-                upload_file(icon_file)
-                point = Point(
-                    name=name,
-                    map_id=map_object.id,
-                    description=description,
-                    icon_path=icon_file.filename,
-                    position_x=position_x,
-                    position_y=position_y,
-                )
-                session.add(point)
-                session.commit()
+            map_object = get_map_by_id(map_id)
+            upload_file(icon_file)
+            create_point(
+                {
+                    "name": name,
+                    "map_id": map_object.id,
+                    "description": description,
+                    "icon_path": icon_file.filename,
+                    "position_x": position_x,
+                    "position_y": position_y,
+                }
+            )
         except Exception as error:
             # FIXME: better error handling
             raise Exception(str(error))
