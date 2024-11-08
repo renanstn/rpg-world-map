@@ -80,9 +80,3 @@ make format
 ```sh
 docker compose run --rm flask-app pytest
 ```
-
-# Teste
-
-1. Foo
-1. Bar
-1. Help!
