@@ -105,32 +105,28 @@ def edit_map(map_id):
     )
 
 
-@app.route("/point", methods=["GET", "POST"])
-def point():
-    if request.method == "POST":
-        name = request.form["pointName"]
-        map_id = request.form["mapId"]
-        description = request.form["pointDescription"]
-        position_x = request.form["pointPositionX"]
-        position_y = request.form["pointPositionY"]
-        icon_file = request.files["pointIcon"]
-        try:
-            map_object = get_map_by_id(map_id)
-            upload_file(icon_file)
-            create_point(
-                {
-                    "name": name,
-                    "map_id": map_object.id,
-                    "description": description,
-                    "icon_path": icon_file.filename,
-                    "position_x": position_x,
-                    "position_y": position_y,
-                }
-            )
-        except Exception as error:
-            # FIXME: better error handling
-            raise Exception(str(error))
-        return "Point created!"
-
-    else:
-        return "todo..."
+@app.route("/point", methods=["POST"])
+def add_point():
+    name = request.form["pointName"]
+    map_id = request.form["mapId"]
+    description = request.form["pointDescription"]
+    position_x = request.form["pointPositionX"]
+    position_y = request.form["pointPositionY"]
+    icon_file = request.files["pointIcon"]
+    try:
+        map_object = get_map_by_id(map_id)
+        upload_file(icon_file)
+        create_point(
+            {
+                "name": name,
+                "map_id": map_object.id,
+                "description": description,
+                "icon_path": icon_file.filename,
+                "position_x": position_x,
+                "position_y": position_y,
+            }
+        )
+    except Exception as error:
+        # FIXME: better error handling
+        raise Exception(str(error))
+    return "Point created!"
