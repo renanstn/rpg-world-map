@@ -79,7 +79,7 @@ def load_map(map_id):
                 "id": point.id,
                 "name": point.name,
                 "description": point.description,
-                "path": point.icon_path,
+                "path": get_minio_path(point.icon_path),
                 "x": point.position_x,
                 "y": point.position_y,
             }
@@ -94,8 +94,8 @@ def load_map(map_id):
 
 
 @app.route("/map/<map_id>/edit")
-def update_map(map_id):
-    map_object = get_map_by_id(map_id)
+def edit_map(map_id):
+    map_object = get_map_by_link(map_id)
     map_url = get_minio_path(map_object.bucket_path)
     return render_template(
         "edit_map.html",

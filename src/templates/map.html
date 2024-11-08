@@ -7,13 +7,27 @@
   </head>
   <body>
     <h2>Welcome to {{ map_name }}</h2>
-    {% for i in points %} {{i.name}} {% endfor %}
-    <img src="{{ image_url }}" alt="" />
+    <button>Edit map</button>
+    <br /><br />
+    <div id="content">
+      <img src="{{ image_url }}" alt="" />
+    </div>
     <input type="hidden" name="mapId" value="{{ map_id }}" />
 
     <script>
-      const items = {{ points | tojson }};
-      console.log(items);
+      const points = {{ points | tojson }};
+      points.forEach(element => {
+        const image = document.createElement("img")
+        image.src = element.path
+        image.alt = element.name
+        image.style.position = "absolute"
+        image.style.left = `${element.x}px`
+        image.style.top = `${element.y}px`
+        image.width = 100
+        image.height = 100
+        const content = document.getElementById("content")
+        content.appendChild(image)
+      });
     </script>
   </body>
 </html>
