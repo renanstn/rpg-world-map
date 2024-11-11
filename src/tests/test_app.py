@@ -1,18 +1,13 @@
 import io
 from unittest.mock import patch, MagicMock
 
-import pytest
 from sqlalchemy.orm import Session
 
-from app import app
 from database import engine
 import models
 
 
-@pytest.fixture
-def client():
-    with app.test_client() as client:
-        yield client
+# This file use fixtures from conftest.py
 
 
 def test_hello_world(client):
